@@ -1,0 +1,30 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; margin: 0; color: #1f2937; background: #f8fafc; }
+header { padding: 16px 24px; background: #111827; color: #f9fafb; }
+header h1 { margin: 0; font-size: 1.4rem; }
+.sub { opacity: .8; margin: 4px 0 0 0; }
+
+section { padding: 16px 24px; }
+.controls, .agents, .composer { background: white; border-bottom: 1px solid #e5e7eb; }
+.controls label { margin-right: 16px; display: inline-flex; align-items: center; gap: 8px; }
+.controls input { width: 280px; padding: 6px 8px; }
+.controls select { padding: 6px 8px; }
+button { padding: 8px 12px; border: 1px solid #111827; background: #111827; color: white; border-radius: 6px; cursor: pointer; }
+button.secondary { background: white; color: #111827; }
+
+.agents h3 { margin: 0 0 8px 0; }
+.agent { display: flex; gap: 8px; align-items: center; padding: 8px 0; }
+.agent input, .agent select, .agent textarea { padding: 6px 8px; }
+.agent .wide { width: 260px; }
+.agent .system { width: 460px; height: 48px; }
+
+.composer textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #e5e7eb; display: block; margin-bottom: 8px; }
+
+.stream-area { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+.stream { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-height: 180px; }
+.stream header { background: #111827; color: white; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+.stream pre { white-space: pre-wrap; word-wrap: break-word; padding: 12px; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.stream .writes { border-top: 1px dashed #e5e7eb; padding: 8px 12px; background: #f9fafb; font-size: .9rem; }
+.write-item { padding: 4px 0; }
+.write-item .applied { color: #065f46; }
+.write-item .preview { color: #92400e; }

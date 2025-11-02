@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-AI Conversation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .control-panel h2 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        button.stop {
+            background: #e74c3c;
+        }
+
+        button.stop:hover {
+            background: #c0392b;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #95a5a6;
+        }
+
+        .status-dot.active {
+            background: #27ae60;
+        }
+
+        .conversation-container {
+            display: flex;
+            gap: 20px;
+            height: 600px;
+        }
+
+        .chat-area {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+
+        .message.user {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .message.claude {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+
+        .message.chatgpt {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .message.gemini {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+
+        .message.system {
+            background: #fafafa;
+            border-left: 4px solid #757575;
+            font-style: italic;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .message-content {
+            white-space: pre-wrap;
+        }
+
+        .input-area {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        .model-status {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .model-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .model-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .model-capabilities {
+            margin-top: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .capability-tag {
+            font-size: 11px;
+            background: #e3f2fd;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .conversation-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Multi-AI Conversation System</h1>
+        
+        <div class="control-panel">
+            <h2>Controls</h2>
+            <div class="controls">
+                <button id="startBtn" onclick="startConversation()">Start Conversation</button>
+                <button id="stopBtn" class="stop" onclick="stopConversation()" disabled>Stop Conversation</button>
+                <input type="text" id="topicInput" placeholder="Enter conversation topic..." style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <div class="status-indicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Inactive</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation-container">
+            <div class="chat-area">
+                <div class="messages" id="messages">
+                    <div class="message system">
+                        <div class="message-header">
+                            <span>System</span>
+                            <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                        </div>
+                        <div class="message-content">Welcome to the Multi-AI Conversation System. Click "Start Conversation" to begin.</div>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Type your message..." disabled>
+                    <button id="sendBtn" onclick="sendUserMessage()" disabled>Send</button>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <h3>AI Models</h3>
+                <div id="modelStatus">
+                    <div class="model-status">
+                        <div class="model-name">Claude</div>
+                        <div class="model-info">Status: <span id="claude-status">Not initialized</span></div>
+                        <div class="model-capabilities">
+                            <span class="capability-tag">text_generation</span>
+                            <span class="capability-tag">reasoning</span>
+                            <span class="capability-tag">conversation</span>
+                        </div>
+                    </div>
+                    <div class="model-status">
+                        <div class="model-name">ChatGPT</div>
+                        <div class="model-info">Status: <span id="chatgpt-status">Not initialized</span></div>
+                        <div class="model-capabilities">
+                            <span class="capability-tag">text_generation</span>
+                            <span class="capability-tag">reasoning</span>
+                            <span class="capability-tag">conversation</span>
+                        </div>
+                    </div>
+                    <div class="model-status">
+                        <div class="model-name">Gemini Vision</div>
+                        <div class="model-info">Status: <span id="gemini-status">Not initialized</span></div>
+                        <div class="model-capabilities">
+                            <span class="capability-tag">vision</span>
+                            <span class="capability-tag">text_generation</span>
+                            <span class="capability-tag">scene_description</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Current Speaker</h3>
+                <div id="currentSpeaker" style="padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: center; color: #666;">
+                    None
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load all the JavaScript files -->
+    <script src="message_bus_manus.js"></script>
+    <script src="model_orchestrator_manus.js"></script>
+    <script src="claude_adapter_manus.js"></script>
+    <script src="chatgpt_adapter_manus.js"></script>
+    <script src="gemini_vision_adapter_manus.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

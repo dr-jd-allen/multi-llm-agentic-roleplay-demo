@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Multi‑Modal AI Chat Room — MVP</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Multi‑Modal AI Chat Room</h1>
+    <p class="sub">Compare automation levels for coding assistants.</p>
+  </header>
+
+  <section class="controls">
+    <label>Server URL:
+      <input id="serverUrl" type="text" placeholder="http://localhost:8000" />
+    </label>
+    <label>Mode:
+      <select id="mode">
+        <option value="chat">chat</option>
+        <option value="plan">plan</option>
+        <option value="review">review</option>
+        <option value="auto">auto (writes to /workspace)</option>
+      </select>
+    </label>
+    <button id="snapshotBtn">Snapshot</button>
+    <button id="restoreBtn">Restore latest</button>
+  </section>
+
+  <section class="agents">
+    <h3>Agents</h3>
+    <div class="agent-list" id="agentList"></div>
+    <button id="addAgentBtn">+ Add agent</button>
+  </section>
+
+  <section class="composer">
+    <textarea id="message" rows="4" placeholder="Describe the feature or fix you want. For review/auto, the model will output code blocks like: ```file: path\n<content>```"></textarea>
+    <button id="sendBtn">Send</button>
+  </section>
+
+  <section id="streamArea" class="stream-area"></section>
+
+  <footer>
+    <small>Built for experimentation. Review all changes before use.</small>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
