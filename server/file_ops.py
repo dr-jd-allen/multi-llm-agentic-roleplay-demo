@@ -21,9 +21,11 @@ def ensure_parent(path: str):
         os.makedirs(parent, exist_ok=True)
 
 def write_file(rel_path: str, content: str) -> str:
+    if os.path.isabs(rel_path):
+        raise ValueError("Refusing to write an absolute path")
     abs_path = os.path.join(WORKSPACE_DIR, rel_path)
     abs_path = os.path.abspath(abs_path)
-    if not abs_path.startswith(os.path.abspath(WORKSPACE_DIR)):
+    if os.path.commonpath((abs_path, os.path.abspath(WORKSPACE_DIR))) != os.path.abspath(WORKSPACE_DIR):
         raise ValueError("Refusing to write outside workspace")
     ensure_parent(abs_path)
     with open(abs_path, "w", encoding="utf-8") as f:
@@ -75,5 +77,10 @@ def restore(ts: str | None) -> str:
                     pass
     os.makedirs(WORKSPACE_DIR, exist_ok=True)
     with zipfile.ZipFile(zip_path, "r") as z:
+        workspace = os.path.abspath(WORKSPACE_DIR)
+        for member in z.infolist():
+            target = os.path.abspath(os.path.join(workspace, member.filename))
+            if os.path.commonpath((target, workspace)) != workspace:
+                raise ValueError("Snapshot contains a path outside workspace")
         z.extractall(WORKSPACE_DIR)
     return ts

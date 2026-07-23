@@ -25,7 +25,7 @@ DEFAULT_MODE = "camera"
 
 client = genai.Client(
     http_options={"api_version": "v1beta"},
-    api_key=os.environ.get("AIzaSyBIjsWrMTPx97WjOORzJnN1OkbR67JAtX8"),
+    api_key=os.environ["GEMINI_API_KEY"],
 )
 
 
@@ -237,5 +237,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main = AudioLoop(video_mode=args.mode)
     asyncio.run(main.run())
-
 

@@ -1,164 +1,52 @@
-# Lex-Claude Multi-AI Orchestrator
+# Multi-LLM Agentic Roleplay Demo
 
-A Node.js orchestration system for facilitating real-time conversations between Claude Opus 4.0 and Lex (GPT-4o) using Dify.ai as the workflow platform.
+This repository contains several experiments for multi-agent conversations. The supported starting point is the **Python MVP**: a FastAPI backend that streams responses from OpenAI and Anthropic agents to a dependency-light browser client.
 
-## Features
+## Quick start: Python MVP
 
-- 🤖 **Multi-AI Orchestration**: Manages conversations between Claude and Lex
-- 🔄 **Turn-based Communication**: Implements proper turn-taking between AI agents
-- 📊 **Conversation Logging**: Automatically logs conversations to Notion
-- 🎯 **Topic-focused Discussions**: Structured conversations around specific topics
-- ⚡ **Event-driven Architecture**: Real-time event handling for conversation flow
+Prerequisites: Python 3.10+ and an OpenAI or Anthropic API key.
 
-## Prerequisites
-
-- Node.js (v14 or higher)
-- Dify.ai account with API access
-- Notion account with integration token
-- A Dify workflow configured with Claude and Lex nodes
-
-## Installation
-
-1. Clone this repository:
-```bash
-cd /Users/jdallen_pro/Projects/agents/lex-claude-demo
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Copy the example environment file:
 ```bash
 cp .env.example .env
+python -m pip install -r requirements.txt
+uvicorn server.app:app --reload --port 8000
 ```
 
-4. Configure your environment variables in `.env`:
-```
-DIFY_API_KEY=your-dify-api-key
-DIFY_WORKFLOW_ID=your-workflow-id
-DIFY_API_URL=https://api.dify.ai/v1
-NOTION_TOKEN=your-notion-token
-NOTION_PAGE_ID=your-notion-database-id
-CLAUDE_NODE_ID=claude-agent
-LEX_NODE_ID=lex-agent
-```
+Set `OPENAI_API_KEY` and/or `ANTHROPIC_API_KEY` in your environment (or an environment loader of your choice). Open `client/index.html` and set its server URL to `http://localhost:8000`.
 
-## Dify Workflow Setup
+The MVP supports chat, plan, review, and auto modes. In auto mode, generated files are confined to `workspace/`; snapshots are stored in `snapshots/`. See [README-mvp.md](README-mvp.md) for the API and event protocol.
 
-Your Dify workflow should have:
+## Repository map
 
-1. **Input Node**: Accepts `message`, `agent`, and `conversation_history`
-2. **Claude Node**: Processes messages when `agent === 'Claude'`
-3. **Lex/GPT-4o Node**: Processes messages when `agent === 'Lex'`
-4. **Output Node**: Returns the agent's response
+| Path | Purpose |
+| --- | --- |
+| `server/` | Supported FastAPI/SSE backend |
+| `client/` | Supported static browser client |
+| `tests/` | Python regression tests |
+| `agents/` | Experimental provider integrations |
+| `examples/` | Legacy scenario examples |
+| `*_orchestrator.js`, `server.js` | Legacy Node/Dify/Socket.IO prototypes |
 
-## Usage
+## Legacy Node prototypes
 
-### Basic Orchestration
-
-```javascript
-const DifyOrchestrator = require('./dify_orchestrator');
-
-const orchestrator = new DifyOrchestrator({
-  DIFY_API_KEY: 'your-api-key',
-  DIFY_WORKFLOW_ID: 'your-workflow-id'
-});
-
-// Start a conversation
-const result = await orchestrator.orchestrateConversation(
-  "AI Ethics",
-  "What are the key ethical considerations for AI development?",
-  10 // max turns
-);
-```
-
-### With Notion Logging
-
-```javascript
-const { runWithLogging } = require('./conversation_logger');
-
-// This will automatically log conversations to Notion
-await runWithLogging();
-```
-
-### Run Examples
+The Node projects are retained as historical experiments and require Dify/Notion configuration. Install their dependencies with `npm install`, then use:
 
 ```bash
-# Run basic orchestrator
-node dify_orchestrator.js
-
-# Run with Notion logging
-node conversation_logger.js
-
-# Sync existing Notion data
-node notion_sync.js
+npm run start:dify
+# or
+npm run start:legacy-gui
 ```
 
-## Event Handling
+Run `npm run check:js` to validate the primary legacy scripts' syntax. The old GUI details are in [GUI_README.md](GUI_README.md).
 
-The orchestrator emits several events:
+## Development
 
-- `conversation-started`: When a new conversation begins
-- `turn-completed`: After each agent completes their turn
-- `agent-error`: When an agent fails to respond
-- `conversation-ended`: When the conversation concludes
-
-## Architecture
-
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   Orchestrator  │────▶│   Dify Workflow │────▶│  AI Agents      │
-│                 │◀────│                 │◀────│  (Claude & Lex) │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Notion DB     │
-│  (Conversation  │
-│     Logs)       │
-└─────────────────┘
+```bash
+python -m pytest
+npm run check:js
 ```
 
-## Conversation Flow
-
-1. **Initialization**: Set topic and initial prompt
-2. **First Turn**: Claude receives initial prompt
-3. **Response**: Claude's response sent to Lex
-4. **Alternation**: Agents alternate turns
-5. **Termination**: Natural end or max turns reached
-6. **Logging**: Full conversation saved to Notion
-
-## Customization
-
-### Add New Conversation Topics
-
-Edit the `examples` array in `dify_orchestrator.js`:
-
-```javascript
-const examples = [
-  {
-    topic: "Your Topic",
-    prompt: "Your initial prompt for the discussion"
-  }
-];
-```
-
-### Modify Turn-Taking Logic
-
-Adjust the `orchestrateConversation` method to implement custom turn-taking rules.
-
-### Custom End Conditions
-
-Modify the `shouldEndConversation` method to add custom conversation termination logic.
-
-## Troubleshooting
-
-- **API Connection Issues**: Verify your Dify API key and endpoint
-- **Workflow Errors**: Ensure your Dify workflow nodes match the configured IDs
-- **Notion Sync Failures**: Check integration permissions for your Notion database
-- **Missing Responses**: Verify agent nodes in Dify are properly configured
+Never commit `.env` files, API keys, generated workspaces, or snapshots. Copy `.env.example` to get the complete configuration reference.
 
 ## License
 
