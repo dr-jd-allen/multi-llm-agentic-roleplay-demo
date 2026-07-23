@@ -4,7 +4,7 @@ from typing import List, Optional, Literal, Dict, Any
 class AgentConfig(BaseModel):
     id: str
     name: str
-    provider: Literal["openai", "anthropic"]
+    provider: Literal["openai", "anthropic", "google"]
     model: str
     system_prompt: Optional[str] = None
     temperature: Optional[float] = 0.2
