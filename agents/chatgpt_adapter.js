@@ -11,7 +11,7 @@ class ChatGPTAdapter {
     }
 
     async _handle(message) {
-        console.log(`[Lex] received: ${message.content}`);
+        console.log(`[Chat] received: ${message.content}`);
     }
 }
 
