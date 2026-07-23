@@ -13,8 +13,8 @@ app = FastAPI(title="Multi-Modal AI Chat Room — MVP")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if not ALLOWED_ORIGINS else ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=ALLOWED_ORIGINS != ["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -16,11 +16,11 @@ Create a `.env` file based on `.env.example`:
 cp .env.example .env
 ```
 
-Your Dify API key is already included: `app-tj7XQcH61Fiml3L3QomCa3Jc`
+Set `DIFY_API_KEY` and any optional Notion variables in `.env`. Never commit API keys.
 
 ### 3. Start the GUI Server
 ```bash
-npm run gui
+npm run start:legacy-gui
 ```
 
 Then open your browser to: `http://localhost:3000`

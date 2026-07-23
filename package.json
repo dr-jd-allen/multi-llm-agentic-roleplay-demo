@@ -1,16 +1,23 @@
 {
   "name": "lex_agent",
   "version": "1.0.0",
-  "main": "notion_logger.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:legacy-gui": "node server.js",
+    "start:dify": "node dify_orchestrator.js",
+    "check:js": "node --check server.js && node --check dify_orchestrator.js && node --check multi_llm_orchestrator.js && node --check conversation_logger.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@notionhq/client": "^5.23.2",
+    "axios": "^1.18.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "node-fetch": "^3.3.2",
-    "openai": "^5.8.2"
+    "openai": "^5.8.2",
+    "socket.io": "^4.8.3"
   }
 }
